@@ -43,7 +43,7 @@ class RegistrationSuccessView(TemplateView):
 class UserLoginView(LoginView):
     template_name = "core/login.html"
     redirect_authenticated_user = True
-    success_url = reverse_lazy("chat_app:room")
+    success_url = reverse_lazy("chat_app:dashboard")
     form_class = UserAuthenticationForm
 
 

@@ -123,3 +123,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # custom user model
 AUTH_USER_MODEL = "core.User"
+
+# redirect urls
+LOGIN_REDIRECT_URL = "/chat/dashboard/"
+LOGOUT_REDIRECT_URL = "/chat/home/"
