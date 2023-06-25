@@ -1,0 +1,161 @@
+{% extends "chat_app/base.html" %}
+
+{% block dashboard %}
+<style>
+    .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .left-section,
+    .right-section {
+        width: 50%;
+    }
+
+    .left-section {
+        padding-right: 10px;
+    }
+
+    .right-section {
+        padding-left: 10px;
+    }
+
+    .room-link {
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .room-link:hover {
+        color: #0056b3;
+    }
+
+    #chat-log {
+        width: 90%;
+        height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    #chat-message-input {
+        width: 90%;
+    }
+
+    .chat-message {
+        margin-bottom: 5px;
+    }
+
+    .sender {
+        text-align: right;
+    }
+
+    .receiver {
+        text-align: left;
+    }
+</style>
+
+<div class="container">
+    <div class="row my-5 mx-5">
+        <div class="left-section">
+            <h2>Online Users</h2>
+            <br>
+            {% for user in users %}
+            <a href="#" class="room-link mx-5" data-room="{{ user.id }}" style="text-decoration: none;">{{ user.name}}</a><br>
+            {% endfor %}
+            <br>
+            <a href="{% url 'core_app:logout' %}" class="btn btn-primary my-5 mx-5" style="text-decoration: none;">Click to Logout</a>
+            {{ sender_id|json_script:"sender-id" }}
+        </div>
+        <div class="right-section">
+            <h2>Chat Room</h2>
+            <div id="chat-log" class="chat-log">
+                {% for message in messages %}
+                {% if message.sender_id.name == request.user.name %}
+                <div class="chat-message sender">{{ message }}</div>
+                {% else %}
+                <div class="chat-message receiver">{{ message }}</div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <br>
+            <input id="chat-message-input" type="text" size="100">
+            <br>
+            <input id="chat-message-submit" type="button" value="Send">
+            {{ room_name|json_script:"room-name-textbox" }}
+            {{ sender_id|json_script:"sender-id-textbox" }}
+            {{ receiver_id|json_script:"receiver-id-textbox" }}
+        </div>
+    </div>
+    <script>
+        var roomLinks = document.querySelectorAll('.room-link');
+        roomLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                var senderId = JSON.parse(document.getElementById('sender-id').textContent);
+                // senderFirstName = senderName.split(" ")[0];
+                var receiverId = parseInt(link.getAttribute('data-room'));
+                // receiverFirstName = receiverName.split(" ")[0];
+                var queryParam = "?receiver=" + receiverId;
+                nameList = [senderId, receiverId].sort();
+                roomName = nameList.join("");// Replace spaces with hyphens
+                var newUrl = '/chat/dashboard/' + roomName + '/' + queryParam;
+                window.location.href = newUrl;
+            });
+        });
+
+        function scrollToBottom() {
+            const chatLog = document.querySelector('#chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        // Event listener for when the page finishes loading
+        document.addEventListener('DOMContentLoaded', function () {
+            scrollToBottom();
+        });
+
+        const roomNameTextbox = JSON.parse(document.getElementById('room-name-textbox').textContent);
+        const senderIdTextbox = JSON.parse(document.getElementById('sender-id-textbox').textContent);
+        const receiverIdTextbox = JSON.parse(document.getElementById('receiver-id-textbox').textContent);
+
+        // var senderId = "{{ request.user.id }}";
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomNameTextbox
+            + '/'
+        );
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            // document.querySelector('#chat-log').value += (data.message + '\n');
+            document.querySelector('#chat-log').innerHTML += '<div class="chat-message sender">' + data.message + '</div>';
+        };
+
+        chatSocket.onclose = function (e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function (e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function (e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                "sender_id": senderIdTextbox,
+                "receiver_id": receiverIdTextbox
+            }));
+            messageInputDom.value = '';
+        };
+    </script>
+</div>
+
+{% endblock %}
