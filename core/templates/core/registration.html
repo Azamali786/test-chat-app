@@ -1,0 +1,17 @@
+{% extends "chat_app/base.html" %}
+
+{% block registration %}
+
+<div class="container">
+    <div class="row">
+        <div class="home-page  my-5 mx-5">
+            <form method="post" class="form-group">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary my-5 mx-5">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

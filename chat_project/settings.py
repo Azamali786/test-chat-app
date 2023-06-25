@@ -28,8 +28,8 @@ INSTALLED_APPS = [
 ]
 
 custom_apps = [
-    "chat_app",
     "core",
+    "chat_app",
 ]
 
 third_party_apps = [

@@ -1,9 +1,14 @@
 from django.urls import path
 
-from chat_app import views
+from core import views
 
 app_name = "core_app"
 
 urlpatterns = [
-    # path("", views.RegistrationView.as_view(), name="home")
+    path("register/", views.RegistrationView.as_view(), name="registration"),
+    path(
+        "registration_success/",
+        views.RegistrationSuccessView.as_view(),
+        name="registration_success",
+    ),
 ]
