@@ -1,9 +1,10 @@
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView
 
 from chat_app.models import User
-from core.forms import RegistrationForm
+from core.forms import RegistrationForm, UserAuthenticationForm
 
 
 class RegistrationView(FormView):
@@ -37,3 +38,15 @@ class RegistrationView(FormView):
 
 class RegistrationSuccessView(TemplateView):
     template_name = "chat_app/home.html"
+
+
+class UserLoginView(LoginView):
+    template_name = "core/login.html"
+    redirect_authenticated_user = True
+    success_url = reverse_lazy("chat_app:room")
+    form_class = UserAuthenticationForm
+
+
+# Logout View
+class UserLogoutView(LogoutView):
+    next_page = reverse_lazy("chat_app:home")

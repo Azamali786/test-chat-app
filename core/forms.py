@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.core.validators import (
     EmailValidator,
@@ -40,3 +41,7 @@ class RegistrationForm(forms.ModelForm):
         if date_of_birth > timezone.localdate():
             raise ValidationError("Future date not allowed.")
         return date_of_birth
+
+
+class UserAuthenticationForm(AuthenticationForm):
+    pass
