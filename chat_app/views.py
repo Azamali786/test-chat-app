@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render
 from django.views import View
@@ -11,7 +12,9 @@ class HomeView(TemplateView):
     template_name = "chat_app/home.html"
 
 
-class DashboardView(View):
+class DashboardView(LoginRequiredMixin, View):
+    login_url = "core:login"
+
     def get(self, request, room_name=None):
         user = request.user
         sender_id = user.id
