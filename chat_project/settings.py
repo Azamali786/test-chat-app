@@ -29,9 +29,12 @@ INSTALLED_APPS = [
 
 custom_apps = [
     "chat_app",
+    "core",
 ]
 
-third_party_apps = []
+third_party_apps = [
+    "phonenumber_field",
+]
 
 INSTALLED_APPS += custom_apps + third_party_apps
 
@@ -117,3 +120,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# custom user model
+AUTH_USER_MODEL = "core.User"
