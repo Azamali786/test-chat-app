@@ -19,6 +19,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -67,6 +68,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "chat_project.wsgi.application"
+ASGI_APPLICATION = "chat_project.asgi.application"
 
 
 # Database
@@ -127,3 +129,14 @@ AUTH_USER_MODEL = "core.User"
 # redirect urls
 LOGIN_REDIRECT_URL = "/chat/dashboard/"
 LOGOUT_REDIRECT_URL = "/chat/home/"
+
+
+# channel layers related settings
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

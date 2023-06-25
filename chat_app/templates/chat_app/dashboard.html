@@ -54,6 +54,13 @@
     .receiver {
         text-align: left;
     }
+    .sender-wb {
+        text-align: left;
+    }
+
+    .receiver-wb {
+        text-align: right;
+    }
 </style>
 
 <div class="container">
@@ -72,7 +79,7 @@
             <h2>Chat Room</h2>
             <div id="chat-log" class="chat-log">
                 {% for message in messages %}
-                {% if message.sender_id.name == request.user.name %}
+                {% if message.sender.name == request.user.name %}
                 <div class="chat-message sender">{{ message }}</div>
                 {% else %}
                 <div class="chat-message receiver">{{ message }}</div>
@@ -128,10 +135,24 @@
             + '/'
         );
 
+        // chatSocket.onmessage = function (e) {
+        //     const data = JSON.parse(e.data);
+        //     // document.querySelector('#chat-log').value += (data.message + '\n');
+        //     document.querySelector('#chat-log').innerHTML += '<div class="chat-message sender">' + data.message + '</div>';
+        // };
+
         chatSocket.onmessage = function (e) {
-            const data = JSON.parse(e.data);
-            // document.querySelector('#chat-log').value += (data.message + '\n');
-            document.querySelector('#chat-log').innerHTML += '<div class="chat-message sender">' + data.message + '</div>';
+        const data = JSON.parse(e.data);
+        const chatLog = document.querySelector('#chat-log');
+
+        if (data.sender_id === senderIdTextbox) {
+            // Current user is the sender
+            chatLog.innerHTML += '<div class="chat-message sender-wb">' + data.message + '</div>';
+            }
+        else {
+            // Current user is the receiver
+            chatLog.innerHTML += '<div class="chat-message receiver-wb">' + data.message + '</div>';
+            }
         };
 
         chatSocket.onclose = function (e) {

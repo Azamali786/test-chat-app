@@ -29,8 +29,8 @@ class DashboardView(View):
         receiver = User.objects.get(id=receiver_id)
         receiver_id = receiver.id
         messages = Message.objects.filter(
-            Q(Q(sender_id=sender_id) & Q(receiver_id=receiver_id))
-            | Q(Q(sender_id=receiver_id) & Q(receiver_id=sender_id))
+            Q(Q(sender=sender_id) & Q(receiver=receiver_id))
+            | Q(Q(sender=receiver_id) & Q(receiver=sender_id))
         ).order_by("created_at")
 
         context = {
@@ -41,5 +41,4 @@ class DashboardView(View):
             "messages": messages,
             "receiver_name": receiver.name,
         }
-        print(context)
         return render(request, "chat_app/dashboard.html", context)
