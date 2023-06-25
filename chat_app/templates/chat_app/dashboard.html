@@ -61,6 +61,31 @@
     .receiver-wb {
         text-align: right;
     }
+    .user {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    }
+
+    .status {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .online {
+      background-color: green;
+    }
+
+    .offline {
+      background-color: gray;
+    }
+
+    .name {
+      font-size: 16px;
+    }
 </style>
 
 <div class="container">
@@ -69,7 +94,14 @@
             <h2>Online Users</h2>
             <br>
             {% for user in users %}
-            <a href="#" class="room-link mx-5" data-room="{{ user.id }}" style="text-decoration: none;">{{ user.name}}</a><br>
+            <div class="user">
+                {% if user.is_online %}
+                    <span class="status online"></span>
+                {% else %}
+                    <span class="status offline"></span>
+                {% endif %}
+                <a href="#" class=" name room-link mx-5" data-room="{{ user.id }}" style="text-decoration: none;">{{ user.name}}</a><br>
+            </div>
             {% endfor %}
             <br>
             <a href="{% url 'core_app:logout' %}" class="btn btn-primary my-5 mx-5" style="text-decoration: none;">Click to Logout</a>

@@ -17,7 +17,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
+        self.user = self.scope["user"]
+
+        # Set the user as online
+        self.user.is_online = True
+        await sync_to_async(self.user.save)()
+
     async def disconnect(self, close_code):
+        # Set the user as offline
+        self.user.is_online = False
+        await sync_to_async(self.user.save)()
+
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 

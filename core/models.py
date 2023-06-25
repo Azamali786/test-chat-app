@@ -51,6 +51,7 @@ class User(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     contact_number = PhoneNumberField(null=True, blank=True)
     is_available = models.BooleanField(default=True)
+    is_online = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     username = None
