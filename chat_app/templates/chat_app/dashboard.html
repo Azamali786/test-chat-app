@@ -54,6 +54,7 @@
     .receiver {
         text-align: left;
     }
+
     .sender-wb {
         text-align: left;
     }
@@ -61,30 +62,31 @@
     .receiver-wb {
         text-align: right;
     }
+
     .user {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
     }
 
     .status {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-right: 10px;
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 10px;
     }
 
     .online {
-      background-color: green;
+        background-color: green;
     }
 
     .offline {
-      background-color: gray;
+        background-color: gray;
     }
 
     .name {
-      font-size: 16px;
+        font-size: 16px;
     }
 </style>
 
@@ -96,11 +98,11 @@
             {% for user in users %}
             <div class="user">
                 {% if user.is_online %}
-                    <span class="status online"></span>
+                <span class="status online"></span>
                 {% else %}
-                    <span class="status offline"></span>
+                <span class="status offline"></span>
                 {% endif %}
-                <a href="#" class=" name room-link mx-5" data-room="{{ user.id }}" style="text-decoration: none;">{{ user.name}}</a><br>
+                <a href="#" class=" name room-link mx-5" data-room="{{ user.id }}" style="text-decoration: none;">{{user.name}}</a><br>
             </div>
             {% endfor %}
             <br>
@@ -143,7 +145,9 @@
                 window.location.href = newUrl;
             });
         });
-
+    </script>
+    {% if room_name %}
+    <script>
         function scrollToBottom() {
             const chatLog = document.querySelector('#chat-log');
             chatLog.scrollTop = chatLog.scrollHeight;
@@ -174,16 +178,16 @@
         // };
 
         chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        const chatLog = document.querySelector('#chat-log');
+            const data = JSON.parse(e.data);
+            const chatLog = document.querySelector('#chat-log');
 
-        if (data.sender_id === senderIdTextbox) {
-            // Current user is the sender
-            chatLog.innerHTML += '<div class="chat-message sender-wb">' + data.message + '</div>';
+            if (data.sender_id === senderIdTextbox) {
+                // Current user is the sender
+                chatLog.innerHTML += '<div class="chat-message sender-wb">' + data.message + '</div>';
             }
-        else {
-            // Current user is the receiver
-            chatLog.innerHTML += '<div class="chat-message receiver-wb">' + data.message + '</div>';
+            else {
+                // Current user is the receiver
+                chatLog.innerHTML += '<div class="chat-message receiver-wb">' + data.message + '</div>';
             }
         };
 
@@ -209,6 +213,8 @@
             messageInputDom.value = '';
         };
     </script>
+
+    {% endif %}
 </div>
 
 {% endblock %}

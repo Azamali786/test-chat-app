@@ -43,5 +43,6 @@ class DashboardView(LoginRequiredMixin, View):
             "sender_id": sender_id,
             "messages": messages,
             "receiver_name": receiver.name,
+            "room_name": room_name,
         }
         return render(request, "chat_app/dashboard.html", context)
